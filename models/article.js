@@ -28,19 +28,10 @@ const articleSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true,
-        // validate: {
-        //   validator(value) {
-        //     return validator.isURL(value);
-        //   },
-        //   message: "You must enter a valid URL for the image",
-        // },
     },
     owner: {
         type: String,
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: "user",
         required: true,
-        select: false,
     },
 });
 
