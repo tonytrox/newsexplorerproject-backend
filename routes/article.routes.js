@@ -1,8 +1,17 @@
 import express from "express";
-import { ping } from "../controllers/articles.controller.js";
+import {
+    getUserArticles,
+    createArticle,
+    deleteArticle,
+} from "../controllers/articles.controller.js";
 
+// Esto crea un módulo de rutas
 const router = express.Router();
 
-router.get("/ping", ping);
+// Escuchar peticiones (GET, POST, DELETE)
+// Asociarlas a funciones
+router.get("/articles/:id", getUserArticles);
+router.post("/articles/:id", createArticle);
+router.delete("/articles/:articleId", deleteArticle);
 
 export default router;
