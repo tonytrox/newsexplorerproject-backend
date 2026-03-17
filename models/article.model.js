@@ -49,9 +49,10 @@ const articleSchema = new mongoose.Schema({
         // Esto crea una referencia a otro modelo.
         // Ese "user" le dice a Mongoose:
         // "Este ObjectId pertenece a un documento del modelo user"
-        ref: "user",
-        // ref: "user" le indica a Mongoose que ese ObjectId pertenece a la colección del modelo user,
-        // permitiendo usar populate() para obtener los datos del usuario.
+        ref: "User",
+        // ✅ coincide con mongoose.model("User")
+        // ref: "User" le indica a Mongoose que ese ObjectId pertenece a la colección del modelo User,
+        // con esto permite usar populate() para obtener los datos del usuario en futuras consultas
         required: true,
         // select false: Evita exponer información sensible (como el identificador del usuario) en las respuestas de la API.
         select: false,

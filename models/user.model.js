@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import validator from "validator";
+import validator from "validator"; // <- se instala dependencia
 
 const userSchema = new mongoose.Schema({
     name: {
