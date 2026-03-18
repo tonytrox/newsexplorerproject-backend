@@ -1,5 +1,8 @@
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model";
+
+const JWT_SECRET = "news-explorer-secret"; // temporal, luego irá en .env
 
 // Versión SIN middleware
 
@@ -44,6 +47,13 @@ export const login = async (req, res) => {
         if (!matched) {
             return res.status(401).send({ message: "Invalid credentials" });
         }
+
+        const token = jwt.sign(
+            // user._id es simplemente el id que MongoDB le asignó cuando se creó el usuario en el DB
+            { _id: user._id }, // <- payload
+            JWT_SECRET, // <- clave secreta
+            { expiresIn: "7d" }, // <- expira en 7 días
+        );
 
         res.status(200).send({
             name: user.name,
