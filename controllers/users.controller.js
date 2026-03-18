@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import User from "../models/user.model";
 
 // Versión SIN middleware
@@ -7,7 +8,10 @@ export const createUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        const newUser = await User.create({ name, email, password });
+        const hash = await bcrypt.hash(password, 10); // <- 10 es el nivel de seguridad
+        // password: hash → guarda el hash en lugar del texto plano
+
+        const newUser = await User.create({ name, email, password: hash });
 
         res.status(201).send({
             name: newUser.name,
@@ -34,10 +38,10 @@ export const login = async (req, res) => {
             return res.status(401).send({ message: "Invalid credentials" });
         }
 
-        // verificar password
-        // comparacion manual (sin bcrypt)
-        if (user.password !== password) {
-            //  👆 DB          👆 formulario
+        // compara el password del formulario con el hash guardado en la DB
+        const matched = await bcrypt.compare(password, user.password);
+
+        if (!matched) {
             return res.status(401).send({ message: "Invalid credentials" });
         }
 
