@@ -1,10 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 
 const JWT_SECRET = "news-explorer-secret"; // temporal, luego irá en .env
-
-// Versión SIN middleware
 
 // POST /signup
 export const createUser = async (req, res) => {
@@ -55,21 +53,17 @@ export const login = async (req, res) => {
             { expiresIn: "7d" }, // <- expira en 7 días
         );
 
-        res.status(200).send({
-            name: user.name,
-            email: user.email,
-        });
+        res.status(200).send({ token });
     } catch (err) {
         res.status(500).send({ message: "Server error" });
     }
 };
 
-// GET /users/:id
+// GET /users/me
+// req.user <- esto lo creamos en el middleware
 export const getUser = async (req, res) => {
-    const userId = req.params.id;
-
     try {
-        const user = await User.findById(userId);
+        const user = await User.findById(req.user._id);
 
         if (!user) {
             return res.status(404).send({ message: "User not found" });
