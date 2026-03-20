@@ -19,6 +19,19 @@ export const createUser = async (req, res) => {
             email: newUser.email,
         });
     } catch (err) {
+        // error de validación del modelo (campos inválidos)
+        if (err.name === "ValidationError") {
+            return res.status(400).send({ message: "Invalid data" });
+        }
+        // err.name === "ValidationError"
+        // Lo lanza Mongoose cuando los datos no supera las validaciones del modelo.
+
+        // email duplicado
+        if (err.code === 11000) {
+            // MongoDB lanza este código cuando intentas guardar un email duplicado (unique: true)
+            return res.status(409).send({ message: "Email already exists" });
+        }
+
         res.status(500).send({ message: "Server error" });
     }
 };
@@ -74,6 +87,10 @@ export const getUser = async (req, res) => {
             email: user.email,
         });
     } catch (err) {
+        // id con formato inválido
+        if (err.name === "CastError") {
+            return res.status(400).send({ message: "Invalid id" });
+        }
         res.status(500).send({ message: "Server error" });
     }
 };
