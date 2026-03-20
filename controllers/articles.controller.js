@@ -1,16 +1,10 @@
 import Article from "../models/article.js";
 
-// Versión SIN middleware
-// el ID del usuario viene en la URL
-
-// GET /articles/:id
+// GET /articles
 export const getUserArticles = async (req, res) => {
-    // obtenemos el id directamente desde la URL
-    const userId = req.params.id; // ← owner
-
     try {
-        // busca artículos que le pertenecen al usuario
-        const articles = await Article.find({ owner: userId });
+        // busca artículos que le pertenecen al usuario. (req.user) <- Middleware
+        const articles = await Article.find({ owner: req.user._id });
 
         // enviamos respuesta
         res.send(articles);
@@ -19,10 +13,9 @@ export const getUserArticles = async (req, res) => {
     }
 };
 
-// POST /articles/:id
+// POST /articles
 export const createArticle = async (req, res) => {
     const { keyword, title, text, date, source, link, image } = req.body;
-    const owner = req.params.id;
 
     try {
         // .create() hace las dos cosas en un solo paso:
@@ -35,7 +28,7 @@ export const createArticle = async (req, res) => {
             source,
             link,
             image,
-            owner,
+            owner: req.user._id, // <- viene del token via middleware
         });
 
         res.status(201).send(newArticle); // lo envia como response
@@ -44,6 +37,7 @@ export const createArticle = async (req, res) => {
     }
 };
 
+// DELETE /articles/:articleId
 export const deleteArticle = async (req, res) => {
     try {
         const { articleId } = req.params;
