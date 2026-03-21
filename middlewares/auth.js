@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "news-explorer-secret"; // la misma clave que usaste en login
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = (req, res, next) => {
     const { authorization } = req.headers;

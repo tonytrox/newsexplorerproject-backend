@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 
-const JWT_SECRET = "news-explorer-secret"; // temporal, luego irá en .env
+const JWT_SECRET = process.env.JWT_SECRET; // <- viene del .env
 
 // POST /signup
 export const createUser = async (req, res) => {

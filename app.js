@@ -1,3 +1,7 @@
+import dotenv from "dotenv"; // → carga el .env automáticamente
+dotenv.config();
+// “Lee el archivo .env y mételo dentro de process.env”
+
 import express from "express";
 import connectDB from "./db.js";
 import userRouter from "./routes/user.routes.js";
@@ -5,7 +9,7 @@ import articleRouter from "./routes/article.routes.js";
 
 const app = express();
 
-const PORT = 3000;
+const PORT = process.env.PORT; // <- viene del .env
 
 connectDB();
 
