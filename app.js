@@ -1,6 +1,9 @@
 import dotenv from "dotenv"; // → carga el .env automáticamente
-dotenv.config();
-// “Lee el archivo .env y mételo dentro de process.env”
+
+if (process.env.NODE_ENV !== "production") {
+    // “Lee el archivo .env y mételo dentro de process.env”
+    dotenv.config();
+}
 
 import express from "express";
 import connectDB from "./db.js";
