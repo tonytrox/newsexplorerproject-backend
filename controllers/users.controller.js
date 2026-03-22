@@ -5,7 +5,7 @@ import User from "../models/user.model.js";
 const JWT_SECRET = process.env.JWT_SECRET; // <- viene del .env
 
 // POST /signup
-export const createUser = async (req, res) => {
+export const createUser = async (req, res, next) => {
     const { name, email, password } = req.body;
 
     try {
@@ -21,7 +21,7 @@ export const createUser = async (req, res) => {
     } catch (err) {
         // error de validación del modelo (campos inválidos)
         if (err.name === "ValidationError") {
-            return res.status(400).send({ message: "Invalid data" });
+            return next({ status: 400, message: "Invalid data" });
         }
         // err.name === "ValidationError"
         // Lo lanza Mongoose cuando los datos no supera las validaciones del modelo.
@@ -29,15 +29,15 @@ export const createUser = async (req, res) => {
         // email duplicado
         if (err.code === 11000) {
             // MongoDB lanza este código cuando intentas guardar un email duplicado (unique: true)
-            return res.status(409).send({ message: "Email already exists" });
+            return next({ status: 409, message: "Email already exists" });
         }
-
-        res.status(500).send({ message: "Server error" });
+        // ✅ ahora → pasa el error al middleware centralizado
+        next(err);
     }
 };
 
 // POST /signin
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     try {
@@ -49,14 +49,14 @@ export const login = async (req, res) => {
 
         // verificar si el usuario existe
         if (!user) {
-            return res.status(401).send({ message: "Invalid credentials" });
+            return next({ status: 401, message: "Invalid credentials" });
         }
 
         // compara el password del formulario con el hash guardado en la DB
         const matched = await bcrypt.compare(password, user.password);
 
         if (!matched) {
-            return res.status(401).send({ message: "Invalid credentials" });
+            return next({ status: 401, message: "Invalid credentials" });
         }
 
         const token = jwt.sign(
@@ -68,18 +68,19 @@ export const login = async (req, res) => {
 
         res.status(200).send({ token });
     } catch (err) {
-        res.status(500).send({ message: "Server error" });
+        next(err);
+        // pasa al middleware centralizado con status 500 por defecto
     }
 };
 
 // GET /users/me
 // req.user <- esto lo creamos en el middleware
-export const getUser = async (req, res) => {
+export const getUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id);
 
         if (!user) {
-            return res.status(404).send({ message: "User not found" });
+            return next({ status: 404, message: "User not found" });
         }
 
         res.status(200).send({
@@ -89,8 +90,9 @@ export const getUser = async (req, res) => {
     } catch (err) {
         // id con formato inválido
         if (err.name === "CastError") {
-            return res.status(400).send({ message: "Invalid id" });
+            return next({ status: 400, message: "Invalid id" });
         }
-        res.status(500).send({ message: "Server error" });
+
+        next(err);
     }
 };

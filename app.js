@@ -35,6 +35,12 @@ app.use("/status", (req, res) => {
 // registra todos los errores, va después de las rutas
 app.use(errorLogger);
 
+// middleware centralizado de errores, siempre al final
+app.use((err, req, res, next) => {
+    const { status = 500, message } = err;
+    res.status(status).send({ message });
+});
+
 // iniciar servidor
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
