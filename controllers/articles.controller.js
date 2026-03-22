@@ -52,14 +52,33 @@ export const deleteArticle = async (req, res, next) => {
     try {
         const { articleId } = req.params;
 
-        // busca el artículo por su _id y lo borra
-        const deletedArticle = await Article.findByIdAndDelete(articleId);
+        // const deletedArticle = await Article.findByIdAndDelete(articleId);
 
-        if (!deletedArticle) {
+        // El problema es que findByIdAndDelete borra y busca en un solo paso,
+        // entonces no puedes verificar el dueño ANTES de borrar.
+
+        // paso 1: busca el artículo sin borrarlo
+        const article = await Article.findById(articleId);
+
+        if (!article) {
             return next({ status: 404, message: "Article not found" });
         }
 
-        res.send(deletedArticle);
+        // paso 2: verifica que el usuario es dueño del artículo
+
+        // ¿Por qué .toString()? .. Ambos son ObjectId de MongoDB, no son strings simples,
+        // los conviertes a string para leerlos
+        if (article.owner.toString() !== req.user._id.toString()) {
+            return next({
+                status: 403,
+                message: "You are not the owner of this article",
+            });
+        }
+
+        // paso 3: si es el dueño, borra el artículo
+        await Article.findByIdAndDelete(articleId);
+
+        res.send(article);
     } catch (err) {
         // id con formato inválido
         if (err.name === "CastError") {
