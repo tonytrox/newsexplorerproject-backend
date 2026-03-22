@@ -9,6 +9,7 @@ import express from "express";
 import connectDB from "./db.js";
 import userRouter from "./routes/user.routes.js";
 import articleRouter from "./routes/article.routes.js";
+import { requestLogger, errorLogger } from "./middlewares/logger.js";
 
 const app = express();
 
@@ -19,6 +20,9 @@ connectDB();
 // middleware para JSON
 app.use(express.json());
 
+// registra todas las solicitudes, va antes de las rutas
+app.use(requestLogger);
+
 // raíz del servidor, Express busca en ambos routers cuál ruta coincide
 app.use("/", userRouter); // rutas de usuario
 app.use("/", articleRouter); // rutas de artículos
@@ -27,6 +31,9 @@ app.use("/", articleRouter); // rutas de artículos
 app.use("/status", (req, res) => {
     res.send("Servidor funcionando correctamente");
 });
+
+// registra todos los errores, va después de las rutas
+app.use(errorLogger);
 
 // iniciar servidor
 app.listen(PORT, () => {
