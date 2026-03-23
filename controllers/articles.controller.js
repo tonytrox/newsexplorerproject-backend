@@ -1,4 +1,4 @@
-import Article from "../models/article.js";
+import Article from "../models/article.model.js";
 
 // GET /articles
 export const getUserArticles = async (req, res, next) => {
@@ -58,7 +58,8 @@ export const deleteArticle = async (req, res, next) => {
         // entonces no puedes verificar el dueño ANTES de borrar.
 
         // paso 1: busca el artículo sin borrarlo
-        const article = await Article.findById(articleId);
+        // jala datos del autor
+        const article = await Article.findById(articleId).select("+owner");
 
         if (!article) {
             return next({ status: 404, message: "Article not found" });
