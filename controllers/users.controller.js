@@ -2,8 +2,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 
-const JWT_SECRET = process.env.JWT_SECRET; // <- viene del .env
-
 // POST /signup
 export const createUser = async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -39,6 +37,7 @@ export const createUser = async (req, res, next) => {
 // POST /signin
 export const login = async (req, res, next) => {
     const { email, password } = req.body;
+    const JWT_SECRET = process.env.JWT_SECRET; // <- viene del .env, se lee cuando se ejecuta la función
 
     try {
         // findOne por defecto devuelve todos sus campos excepto los que el modelo tenga marcados como select: false.

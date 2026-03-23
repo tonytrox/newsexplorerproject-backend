@@ -1,7 +1,7 @@
 import express from "express";
 import { celebrate, Joi } from "celebrate";
 import { createUser, login, getUser } from "../controllers/users.controller.js";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 // Esto crea un módulo de rutas
