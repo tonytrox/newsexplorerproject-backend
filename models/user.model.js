@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
 
     email: {
         type: String,
-        // hace obligatorio el campo email y lanza este mensaje si está ausente
         required: [true, "You must enter a valid email "],
         unique: true,
         validate: {

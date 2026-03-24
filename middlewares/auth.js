@@ -8,18 +8,14 @@ const auth = (req, res, next) => {
         return res.status(401).send({ message: "Authorization required" });
     }
 
-    // extraemos el token quitando el "Bearer " del inicio
     const token = authorization.replace("Bearer ", "");
 
     try {
-        // verificamos y decodificamos el token
         const payload = jwt.verify(token, JWT_SECRET);
 
-        // guardamos el payload en req.user para usarlo en los controladores
-        // Es decir, req.user no existe por defecto en Express, nosotros lo creamos en el middleware
         req.user = payload;
 
-        next(); // "aprobado, sigue al siguiente..(controlador)"
+        next();
     } catch (err) {
         res.status(401).send({ message: "Invalid token" });
     }

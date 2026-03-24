@@ -43,18 +43,9 @@ const articleSchema = new mongoose.Schema({
         },
     },
     owner: {
-        // Este campo owner guarda el _id de un documento del modelo "user", creando una relación entre el Article y el User.
-        // define que ese campo almacenará el identificador único.
         type: mongoose.Schema.Types.ObjectId,
-        // Esto crea una referencia a otro modelo.
-        // Ese "user" le dice a Mongoose:
-        // "Este ObjectId pertenece a un documento del modelo user"
         ref: "User",
-        // ✅ coincide con mongoose.model("User")
-        // ref: "User" le indica a Mongoose que ese ObjectId pertenece a la colección del modelo User,
-        // con esto permite usar populate() para obtener los datos del usuario en futuras consultas
         required: true,
-        // select false: Evita exponer información sensible (como el identificador del usuario) en las respuestas de la API.
         select: false,
     },
 });

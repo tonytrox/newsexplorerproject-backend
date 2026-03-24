@@ -23,9 +23,8 @@ app.use(express.json());
 // registra todas las solicitudes, va antes de las rutas
 app.use(requestLogger);
 
-// raíz del servidor, Express busca en ambos routers cuál ruta coincide
-app.use("/", userRouter); // rutas de usuario
-app.use("/", articleRouter); // rutas de artículos
+app.use("/", userRouter);
+app.use("/", articleRouter);
 
 // ruta básica
 app.use("/status", (req, res) => {

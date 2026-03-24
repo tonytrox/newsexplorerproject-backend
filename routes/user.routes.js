@@ -4,13 +4,9 @@ import { createUser, login, getUser } from "../controllers/users.controller.js";
 import auth from "../middlewares/auth.js";
 
 const router = express.Router();
-// Esto crea un módulo de rutas
 
 // rutas pública
 
-// celebrate: actúa como portero: valida el body antes de que llegue al controlador
-// si los datos no cumplen las reglas → responde con error y nunca llega al controlador
-// si los datos son válidos → pasa al controlador
 router.post(
     "/signup",
     celebrate({
@@ -34,7 +30,7 @@ router.post(
     login,
 );
 
-// ✅ con auth - ruta protegida
+// ruta protegida
 router.get("/users/me", auth, getUser);
 //                  middleware  controlador
 
